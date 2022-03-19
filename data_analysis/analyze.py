@@ -4,6 +4,8 @@ import sys
 from PIL import Image
 import numpy as np
 
+from utils import load_csv, check_distribution, check_cumulative_distribution
+
 dataset = "dataset"
 archive = "archive"
 test = "test"
@@ -66,7 +68,7 @@ def create_file_list(scrape_dir, format = '.png'):
     
     return fileList
 
-def convert_data_to_txt(folder, label):
+def convert_data_to_csv(folder, label):
     # label 0 = anomaly, 1 = normal
 
     file_list = create_file_list(folder)
@@ -107,22 +109,12 @@ def convert_data_to_txt(folder, label):
 
     # np.savetxt("not_good_txt", np_collect, delimiter=" ")
 
-def load_csv(folder):
-    # load csv into a np array
-    data = np.genfromtxt(folder, delimiter=',', dtype=np.int)
-    
-    # remove first column
-    data = data[:, 1:]
-
-    print("this is data", data)
-
-    # check distribution
-    
-
 
 if __name__ == "__main__":
     print("this is analyze")
     # countSamples()
     # define_anomaly()
-    # convert_data_to_txt(test_dir, 1)
-    load_csv(csv_train_not_good_dir)
+    # convert_data_to_csv(test_dir, 1)
+    data = load_csv(csv_train_good_dir, True)
+    # check_distribution(data)
+    check_cumulative_distribution(data)
