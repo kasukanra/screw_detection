@@ -3,8 +3,11 @@ import csv
 import sys
 from PIL import Image
 import numpy as np
+import torch
+import torchvision
+import torchvision.transforms as T
 
-from utils import load_csv, check_distribution, check_cumulative_distribution
+from utils import load_csv, check_distribution, check_cumulative_distribution, check_gaussian_mixture
 
 dataset = "dataset"
 archive = "archive"
@@ -78,6 +81,10 @@ def convert_data_to_csv(folder, label):
         print(file)
         img_file = Image.open(file)
         # img_file.show()
+        
+        transform = T.Resize(256)
+        img_file = transform(img_file)
+
 
         # get original image parameters...
         width, height = img_file.size
@@ -87,9 +94,15 @@ def convert_data_to_csv(folder, label):
         # make image Greyscale
         img_grey = img_file.convert('L')
 
+        # print("height", img_grey.size[0])
+        # print("width", img_grey.size[1])
 
         # Save Greyscale values
         value = np.asarray(img_grey.getdata(), dtype=np.int).reshape((img_grey.size[1], img_grey.size[0]))
+        print("this is value before flatten", value)
+        print("this is value length", len(value))
+
+
         value = value.flatten()
         # value = np.append(label, value)
         print(value)
@@ -114,7 +127,8 @@ if __name__ == "__main__":
     print("this is analyze")
     # countSamples()
     # define_anomaly()
-    # convert_data_to_csv(test_dir, 1)
-    data = load_csv(csv_train_good_dir, True)
+    convert_data_to_csv(test_dir, 1)
+    # data = load_csv(csv_train_good_dir, True)
     # check_distribution(data)
-    check_cumulative_distribution(data)
+    # check_cumulative_distribution(data)
+    # check_gaussian_mixture(data)

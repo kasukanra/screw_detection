@@ -1,6 +1,7 @@
 import numpy as np
 import scipy.stats
 import matplotlib.pyplot as plt
+from sklearn.mixture import GaussianMixture
 
 def load_csv(folder, truncate):
     # load csv into a np array
@@ -14,7 +15,7 @@ def load_csv(folder, truncate):
 
     return data
 
-# check distribution
+# check normal distribution
 def check_distribution(data):
     data_length = len(data)
 
@@ -55,8 +56,60 @@ def check_cumulative_distribution(data):
     x = np.linspace(min(mean_value), max(mean_value), num=data_length)
     plt.plot(x, normal_distribution.cdf(x), label="Normal distribution")
     
-    # single pixel
+    # single pixel comparison, didn't use
     # data[0]
 
     plt.legend()
+    plt.show()
+
+def fit_mixture(data, n_components = 1):
+    data = np.array(data).reshape(-1,1)
+    model = GaussianMixture(n_components=n_components)
+    model.fit(data)
+
+    return model
+
+# check gaussian_mixture
+def check_gaussian_mixture(data):
+    plt.figure(figsize=(16,5))
+    plt.subplot(121)
+
+    data_length = len(data)
+    mean_value = np.mean(data, axis=1)
+    
+    # plot estimated CDF against mixture
+    plt.plot(sorted(mean_value), np.linspace(0, 1, len(mean_value)), label="Estimated CDF")
+
+
+    # estimate model CDF from 1000 datapoints, and truncate
+    model = fit_mixture(mean_value, n_components = 2)
+
+    n_samples = 10000
+    samples, _ = model.sample(n_samples)
+    samples = sorted(samples.reshape(-1))
+    samples = [s for s in samples if (0 <= s <= 255)]
+
+    # plot the CDF of gaussian mixture
+    x = np.linspace(0, 1, len(samples))
+    plt.plot(samples, x, label="Gaussian mixture CDF")
+
+    plt.title("CDF of good compared to Gaussian mixture PDF")
+    plt.legend()
+
+
+    # plot normal distribution against mixture
+    plt.subplot(122)
+
+     # Estimate the distribution of the data and mixture
+    kde_data = scipy.stats.gaussian_kde(mean_value, 0.1)
+    kde_mixture = scipy.stats.gaussian_kde(samples)
+
+    # Plot the two distributions
+    x = np.linspace(min(mean_value), max(mean_value), data_length)
+    plt.plot(x,kde_data(x),label='PDF Data')
+    plt.plot(x,kde_mixture(x),label='Gaussian mixture PDF')
+
+    plt.title(f"PDF of good compared to Gaussian mixture PDF")
+    plt.legend()
+
     plt.show()
