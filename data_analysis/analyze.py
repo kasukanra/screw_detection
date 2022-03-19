@@ -12,10 +12,17 @@ good = "good"
 not_good = "not-good"
 np_txt = "np_text"
 
+csv_path = "csv"
+csv_dir_good = "good.csv"
+csv_dir_not_good = "not_good.csv"
+
 cwd_parent = os.path.dirname(os.getcwd())
 test_dir = os.path.join(os.path.abspath(cwd_parent), dataset, archive, test)
 train_good_dir = os.path.join(os.path.abspath(cwd_parent), dataset, archive, train, good)
 train_not_good_dir = os.path.join(os.path.abspath(cwd_parent), dataset, archive, train, not_good)
+
+csv_train_good_dir = os.path.join(os.path.abspath(cwd_parent), dataset, archive, csv_path, csv_dir_good)
+csv_train_not_good_dir = os.path.join(os.path.abspath(cwd_parent), dataset, archive, csv_path, csv_dir_not_good)
 
 def countSamples():
     # 180 test samples
@@ -59,10 +66,10 @@ def create_file_list(scrape_dir, format = '.png'):
     
     return fileList
 
-def convert_train_data_to_txt(train_folder, label):
+def convert_data_to_txt(folder, label):
     # label 0 = anomaly, 1 = normal
 
-    file_list = create_file_list(train_folder)
+    file_list = create_file_list(folder)
     # np_collect = []
 
     for file in file_list:
@@ -82,7 +89,7 @@ def convert_train_data_to_txt(train_folder, label):
         # Save Greyscale values
         value = np.asarray(img_grey.getdata(), dtype=np.int).reshape((img_grey.size[1], img_grey.size[0]))
         value = value.flatten()
-        value = np.append(label, value)
+        # value = np.append(label, value)
         print(value)
 
         # add current image to np_collect
@@ -94,15 +101,28 @@ def convert_train_data_to_txt(train_folder, label):
 
         
         # save csv
-        with open("good.csv", 'a', newline='') as f:
+        with open("test.csv", 'a', newline='') as f:
             writer = csv.writer(f)
             writer.writerow(value)
 
     # np.savetxt("not_good_txt", np_collect, delimiter=" ")
+
+def load_csv(folder):
+    # load csv into a np array
+    data = np.genfromtxt(folder, delimiter=',', dtype=np.int)
+    
+    # remove first column
+    data = data[:, 1:]
+
+    print("this is data", data)
+
+    # check distribution
+    
 
 
 if __name__ == "__main__":
     print("this is analyze")
     # countSamples()
     # define_anomaly()
-    convert_train_data_to_txt(train_good_dir, 1)
+    # convert_data_to_txt(test_dir, 1)
+    load_csv(csv_train_not_good_dir)
