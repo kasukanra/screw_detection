@@ -63,7 +63,7 @@ def main():
 
     # train model
     model.train()
-    batch_size = 40
+    batch_size = 5
     loss_func = nn.MSELoss()
     optimizer = T.optim.Adam(model.parameters(), lr = 0.01)
 

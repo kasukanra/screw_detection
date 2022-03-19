@@ -29,6 +29,7 @@ class Anomaly_Net(nn.Module):
 		z = T.tanh(self.layer1(x))
 		z = T.tanh(self.layer2(z))
 		z = T.tanh(self.layer3(z))
-		z = T.tanh(self.layer4(z))  # consider none or sigmoid
+		# output layer use sigmoid?
+		z = T.tanh(self.layer4(z))
 
 		return z
