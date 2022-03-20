@@ -86,28 +86,12 @@ def convert_data_to_csv(folder, label):
 
     for file in file_list:
         print(file)
-        # img_file = Image.open(file)
-        # img_file.show()
         
         img_file = cv2.imread(file)
         img_file = cv2.resize(img_file, dsize=(256, 256), interpolation=cv2.INTER_CUBIC)
 
-
-        # transform = T.Resize(256)
-        # img_file = transform(img_file)
-
-
-        # get original image parameters...
-        # width, height = img_file.size
-        # format = img_file.format
-        # mode = img_file.mode
-
-        # make image Greyscale
-        # img_grey = img_file.convert('L')
         img_grey = cv2.cvtColor(img_file, cv2.COLOR_BGR2GRAY)
 
-        # print("height", img_grey.size[0])
-        # print("width", img_grey.size[1])
 
         if(len(img_grey.shape) < 3):
             print('grey')
@@ -122,18 +106,11 @@ def convert_data_to_csv(folder, label):
         print("this is value length", len(value))
 
         value = value.flatten()
-        # value = np.append(label, value)
+        value = np.append(label, value)
         print(value)
 
-        # add current image to np_collect
-        # if len(np_collect) == 0:
-        #     np_collect = value
-
-        
-        # np_collect = np.vstack([np_collect, value])
-        
         # save csv
-        with open("test.csv", 'a', newline='') as f:
+        with open("good.csv", 'a', newline='') as f:
             writer = csv.writer(f)
             writer.writerow(value)
 
@@ -144,7 +121,7 @@ if __name__ == "__main__":
     print("this is analyze")
     # countSamples()
     # define_anomaly()
-    # convert_data_to_csv(test_dir, 0)
+    convert_data_to_csv(train_good_dir, 1)
     # data = load_csv(csv_train_good_dir, True)
     # check_distribution(data)
     # check_cumulative_distribution(data)

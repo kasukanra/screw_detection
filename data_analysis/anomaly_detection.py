@@ -161,6 +161,6 @@ def check_GPU():
 
 if __name__ == "__main__":
     print("this is anomaly_detection_main")
-    main()
-    # sample_reconstruction()
+    # main()
+    sample_reconstruction()
     # check_GPU()
