@@ -11,9 +11,13 @@ from torch.autograd import Variable
 class Anomaly_Net(nn.Module):
 	def __init__(self):
 		super(Anomaly_Net, self).__init__()
+		# encoder hidden
 		self.layer1 = nn.Linear(65536, 100)
+		# encoder output
 		self.layer2 = nn.Linear(100, 50)
+		# decoder hidden
 		self.layer3 = nn.Linear(50, 100)
+		# decoder output
 		self.layer4 = nn.Linear(100, 65536)
 
 		# initialize weight with glorot uniform 
@@ -29,8 +33,8 @@ class Anomaly_Net(nn.Module):
 		z = T.tanh(self.layer1(x))
 		z = T.tanh(self.layer2(z))
 		z = T.tanh(self.layer3(z))
+		z = T.tanh(self.layer4(z))
 		# output layer use sigmoid?
-		z = T.sigmoid(self.layer4(z))
-		# z = T.tanh(self.layer4(z))
-
+		# z = T.sigmoid(self.layer4(z))
+		
 		return z

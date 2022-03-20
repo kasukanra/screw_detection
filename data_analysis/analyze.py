@@ -1,3 +1,4 @@
+from configparser import Interpolation
 import os
 import csv
 import sys
@@ -6,6 +7,8 @@ import numpy as np
 import torch
 import torchvision
 import torchvision.transforms as T
+
+import cv2
 
 from utils import load_csv, check_distribution, check_cumulative_distribution, check_gaussian_mixture
 
@@ -79,35 +82,44 @@ def convert_data_to_csv(folder, label):
     # sort file_list so it goes 0 - end
     file_list.sort(key=lambda f: int(''.join(filter(str.isdigit, f))))
 
-    print("this is file_list sorted", file_list)
-
-    np_collect = []
+    # print("this is file_list sorted", file_list)
 
     for file in file_list:
         print(file)
-        img_file = Image.open(file)
+        # img_file = Image.open(file)
         # img_file.show()
         
-        transform = T.Resize(256)
-        img_file = transform(img_file)
+        img_file = cv2.imread(file)
+        img_file = cv2.resize(img_file, dsize=(256, 256), interpolation=cv2.INTER_CUBIC)
+
+
+        # transform = T.Resize(256)
+        # img_file = transform(img_file)
 
 
         # get original image parameters...
-        width, height = img_file.size
-        format = img_file.format
-        mode = img_file.mode
+        # width, height = img_file.size
+        # format = img_file.format
+        # mode = img_file.mode
 
         # make image Greyscale
-        img_grey = img_file.convert('L')
+        # img_grey = img_file.convert('L')
+        img_grey = cv2.cvtColor(img_file, cv2.COLOR_BGR2GRAY)
 
         # print("height", img_grey.size[0])
         # print("width", img_grey.size[1])
+
+        if(len(img_grey.shape) < 3):
+            print('grey')
+        elif len(img_grey.shape) == 3:
+            print ('Color(RGB)')
+
+        img_grey = Image.fromarray(img_grey)
 
         # Save Greyscale values
         value = np.asarray(img_grey.getdata(), dtype=np.int).reshape((img_grey.size[1], img_grey.size[0]))
         print("this is value before flatten", value)
         print("this is value length", len(value))
-
 
         value = value.flatten()
         # value = np.append(label, value)
@@ -119,7 +131,6 @@ def convert_data_to_csv(folder, label):
 
         
         # np_collect = np.vstack([np_collect, value])
-
         
         # save csv
         with open("test.csv", 'a', newline='') as f:
@@ -133,7 +144,7 @@ if __name__ == "__main__":
     print("this is analyze")
     # countSamples()
     # define_anomaly()
-    convert_data_to_csv(test_dir, 1)
+    # convert_data_to_csv(test_dir, 0)
     # data = load_csv(csv_train_good_dir, True)
     # check_distribution(data)
     # check_cumulative_distribution(data)
