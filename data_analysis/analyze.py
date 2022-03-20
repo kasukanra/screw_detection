@@ -75,7 +75,13 @@ def convert_data_to_csv(folder, label):
     # label 0 = anomaly, 1 = normal
 
     file_list = create_file_list(folder)
-    # np_collect = []
+
+    # sort file_list so it goes 0 - end
+    file_list.sort(key=lambda f: int(''.join(filter(str.isdigit, f))))
+
+    print("this is file_list sorted", file_list)
+
+    np_collect = []
 
     for file in file_list:
         print(file)
