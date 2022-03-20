@@ -28,7 +28,7 @@ train_not_good_dir = os.path.join(os.path.abspath(cwd_parent), dataset, archive,
 csv_train_good_dir = os.path.join(os.path.abspath(cwd_parent), dataset, archive, csv_path, csv_dir_good)
 csv_train_not_good_dir = os.path.join(os.path.abspath(cwd_parent), dataset, archive, csv_path, csv_dir_not_good)
 
-model_path = "entire_model.pt"
+model_path = "entire_model_lr_change.pt"
 
 def main():
     print("Autoencoder for MVtec screws")
@@ -44,7 +44,10 @@ def main():
     print("this is train_not_good_data", train_not_good_data)
 
     # combine data
-    train_data = np.append(train_good_data, train_not_good_data, axis=0)
+    # train_data = np.append(train_good_data, train_not_good_data, axis=0)
+
+    # normal data (no anomaly)
+    train_data = train_good_data
 
     print("this is train_data", train_data)
     print("this is length of train_data", len(train_data))
@@ -65,11 +68,13 @@ def main():
     model.train()
     batch_size = 5
     loss_func = nn.MSELoss()
-    optimizer = T.optim.Adam(model.parameters(), lr = 0.01)
+
+    # lower learning rate more?
+    optimizer = T.optim.Adam(model.parameters(), lr = 0.001)
 
     batch_item = Batch(num_items=len(norm_x), batch_size=batch_size, seed=1)
 
-    max_epochs = 1000
+    max_epochs = 2000
 
     print("start training")
 
