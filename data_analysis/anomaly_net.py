@@ -40,7 +40,7 @@ class Anomaly_Net(nn.Module):
 			nn.ReLU(),
 			nn.Linear(8192, 16384),
 			nn.ReLU(),
-			nn.Linear(4096, 65536),
+			nn.Linear(16384, 65536),
 			nn.ReLU(),
 		)
 
