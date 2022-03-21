@@ -33,7 +33,7 @@ csv_train_good_dir = os.path.join(os.path.abspath(cwd_parent), dataset, archive,
 csv_train_not_good_dir = os.path.join(os.path.abspath(cwd_parent), dataset, archive, csv_path, csv_dir_not_good)
 csv_test_dir = os.path.join(os.path.abspath(cwd_parent), dataset, archive, csv_path, csv_dir_test)
 
-model_path = "entire_model_lr_tanh.pt"
+model_path = "entire_model_lr_tanh_2.pt"
 
 def main():
     print("Autoencoder for MVtec screws")
@@ -71,15 +71,15 @@ def main():
 
     # train model
     model.train()
-    batch_size = 5
+    batch_size = 40
     loss_func = nn.MSELoss()
 
     # lower learning rate more?
-    optimizer = T.optim.Adam(model.parameters(), lr = 0.001)
+    optimizer = T.optim.Adam(model.parameters(), lr = 0.0001)
 
     batch_item = Batch(num_items=len(norm_x), batch_size=batch_size, seed=1)
 
-    max_epochs = 2000
+    max_epochs = 1000
 
     print("start training")
 
@@ -101,8 +101,12 @@ def main():
     print("saving model")
     T.save(model, model_path)
 
+def predict():
+    print("this is the predict method")
+
+
 def sample_reconstruction():
-    print("this is predict method")
+    print("this is the sample reconstruction method")
 
     train_good_data = load_csv(csv_train_good_dir, False)
     train_not_good_data = load_csv(csv_train_not_good_dir, False)
@@ -155,12 +159,15 @@ def sample_reconstruction():
 
     cv2.imwrite("train_good_first_image_reconstruction.png", reconstruction_arr)
 
+    print("this is data_x[0]", data_x[0])
+    print("this is reconstruction_arr", reconstruction_arr)
+
 
 def check_GPU():
     print("is gpu available: ", T.cuda.is_available())
 
 if __name__ == "__main__":
     print("this is anomaly_detection_main")
-    # main()
-    sample_reconstruction()
+    main()
+    # sample_reconstruction()
     # check_GPU()
