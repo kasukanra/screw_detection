@@ -179,7 +179,9 @@ def sample_reconstruction():
 
 
     reconstruction_arr = reconstruction_arr.reshape((256, 256))
-    reconstruction_arr = reconstruction_arr.astype(int).astype('float32')
+
+    # round before casting to int?
+    reconstruction_arr = np.around(reconstruction_arr).astype(int).astype('float32')
 
     cv2.imwrite("train_good_first_image_reconstruction.png", reconstruction_arr)
 
@@ -192,6 +194,6 @@ def check_GPU():
 
 if __name__ == "__main__":
     print("this is anomaly_detection_main")
-    # main()
-    sample_reconstruction()
+    main()
+    # sample_reconstruction()
     # check_GPU()

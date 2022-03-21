@@ -14,7 +14,7 @@ class Anomaly_Net(nn.Module):
 		self.enc = nn.Sequential(
 			nn.Linear(65536, 16384),
 			nn.ReLU(),
-			nn.Linear(16834, 8192),
+			nn.Linear(16384, 8192),
 			nn.ReLU(),
 			nn.Linear(8192, 4096),
 			nn.ReLU(),

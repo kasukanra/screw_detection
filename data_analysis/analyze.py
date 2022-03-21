@@ -92,7 +92,6 @@ def convert_data_to_csv(folder, label):
 
         img_grey = cv2.cvtColor(img_file, cv2.COLOR_BGR2GRAY)
 
-
         if(len(img_grey.shape) < 3):
             print('grey')
         elif len(img_grey.shape) == 3:
@@ -100,7 +99,7 @@ def convert_data_to_csv(folder, label):
 
         img_grey = Image.fromarray(img_grey)
 
-        # Save Greyscale values
+        #save greyscale values
         value = np.asarray(img_grey.getdata(), dtype=np.int).reshape((img_grey.size[1], img_grey.size[0]))
         print("this is value before flatten", value)
         print("this is value length", len(value))
@@ -114,7 +113,6 @@ def convert_data_to_csv(folder, label):
             writer = csv.writer(f)
             writer.writerow(value)
 
-    # np.savetxt("not_good_txt", np_collect, delimiter=" ")
 
 
 if __name__ == "__main__":
