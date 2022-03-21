@@ -12,7 +12,11 @@ class Anomaly_Net(nn.Module):
 	def __init__(self):
 		super(Anomaly_Net, self).__init__()
 		self.enc = nn.Sequential(
-			nn.Linear(65536, 4096),
+			nn.Linear(65536, 16384),
+			nn.ReLU(),
+			nn.Linear(16834, 8192),
+			nn.ReLU(),
+			nn.Linear(8192, 4096),
 			nn.ReLU(),
 			nn.Linear(4096, 2048),
 			nn.ReLU(),
@@ -21,7 +25,7 @@ class Anomaly_Net(nn.Module):
 			nn.Linear(1024, 512),
 			nn.ReLU(),
 			nn.Linear(512, 256),
-			nn.ReLU()
+			nn.ReLU(),
 		)
 		self.dec = nn.Sequential(
 			nn.Linear(256, 512),
@@ -31,6 +35,10 @@ class Anomaly_Net(nn.Module):
 			nn.Linear(1024, 2048),
 			nn.ReLU(),
 			nn.Linear(2048, 4096),
+			nn.ReLU(),
+			nn.Linear(4096, 8192),
+			nn.ReLU(),
+			nn.Linear(8192, 16384),
 			nn.ReLU(),
 			nn.Linear(4096, 65536),
 			nn.ReLU(),

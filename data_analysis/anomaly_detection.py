@@ -33,7 +33,7 @@ csv_train_good_dir = os.path.join(os.path.abspath(cwd_parent), dataset, archive,
 csv_train_not_good_dir = os.path.join(os.path.abspath(cwd_parent), dataset, archive, csv_path, csv_dir_not_good)
 csv_test_dir = os.path.join(os.path.abspath(cwd_parent), dataset, archive, csv_path, csv_dir_test)
 
-model_path = "entire_model_lr_tanh_2.pt"
+model_path = "entire_model_ReLU.pt"
 
 def main():
     print("Autoencoder for MVtec screws")
@@ -75,7 +75,7 @@ def main():
     loss_func = nn.MSELoss()
 
     # lower learning rate more?
-    optimizer = T.optim.Adam(model.parameters(), lr = 0.0001)
+    optimizer = T.optim.Adam(model.parameters(), lr = 0.001)
 
     batch_item = Batch(num_items=len(norm_x), batch_size=batch_size, seed=1)
 
@@ -104,6 +104,30 @@ def main():
 def predict():
     print("this is the predict method")
 
+    train_good_data = load_csv(csv_train_good_dir, False)
+    train_data = train_good_data
+
+    # split labels from training data
+    data_x = train_data[:, 1:]
+    labels = train_data[:, :1]
+
+    norm_x = data_x / 255
+    H, W = 256, 256
+
+    model = T.load(model_path)
+    model = model.eval()
+
+    X = T.Tensor(norm_x)
+    Y = model(X)
+    N = len(data_x)
+
+    loss_collect = []
+
+    for i in range(N):
+        loss = nn.MSELoss(data_x[i], Y[0], reduction='mean')
+        print("this is loss", loss)
+        print("this is loss.item", loss.item())
+        loss_collect.append(loss.item())
 
 def sample_reconstruction():
     print("this is the sample reconstruction method")
@@ -168,6 +192,6 @@ def check_GPU():
 
 if __name__ == "__main__":
     print("this is anomaly_detection_main")
-    main()
-    # sample_reconstruction()
+    # main()
+    sample_reconstruction()
     # check_GPU()
