@@ -33,7 +33,7 @@ csv_train_good_dir = os.path.join(os.path.abspath(cwd_parent), dataset, archive,
 csv_train_not_good_dir = os.path.join(os.path.abspath(cwd_parent), dataset, archive, csv_path, csv_dir_not_good)
 csv_test_dir = os.path.join(os.path.abspath(cwd_parent), dataset, archive, csv_path, csv_dir_test)
 
-model_path = "entire_model_ReLU.pt"
+model_path = "entire_model_ReLU_2.pt"
 
 def main():
     print("Autoencoder for MVtec screws")
@@ -71,7 +71,7 @@ def main():
 
     # train model
     model.train()
-    batch_size = 40
+    batch_size = 20
     loss_func = nn.MSELoss()
 
     # lower learning rate more?
