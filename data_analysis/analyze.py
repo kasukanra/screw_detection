@@ -114,7 +114,6 @@ def convert_data_to_csv(folder, label):
             writer.writerow(value)
 
 
-
 if __name__ == "__main__":
     print("this is analyze")
     # countSamples()
