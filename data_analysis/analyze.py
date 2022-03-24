@@ -74,7 +74,7 @@ def create_file_list(scrape_dir, format = '.png'):
     
     return fileList
 
-def convert_data_to_csv(folder, label):
+def convert_data_to_csv(folder, label, size):
     # label 0 = anomaly, 1 = normal
 
     file_list = create_file_list(folder)
@@ -88,7 +88,7 @@ def convert_data_to_csv(folder, label):
         print(file)
         
         img_file = cv2.imread(file)
-        img_file = cv2.resize(img_file, dsize=(256, 256), interpolation=cv2.INTER_CUBIC)
+        img_file = cv2.resize(img_file, dsize=(size, size), interpolation=cv2.INTER_CUBIC)
 
         img_grey = cv2.cvtColor(img_file, cv2.COLOR_BGR2GRAY)
 
@@ -105,11 +105,11 @@ def convert_data_to_csv(folder, label):
         print("this is value length", len(value))
 
         value = value.flatten()
-        value = np.append(label, value)
+        # value = np.append(label, value)
         print(value)
 
         # save csv
-        with open("good.csv", 'a', newline='') as f:
+        with open("test.csv", 'a', newline='') as f:
             writer = csv.writer(f)
             writer.writerow(value)
 
@@ -118,7 +118,7 @@ if __name__ == "__main__":
     print("this is analyze")
     # countSamples()
     # define_anomaly()
-    convert_data_to_csv(train_good_dir, 1)
+    convert_data_to_csv(train_not_good_dir, 0, 128)
     # data = load_csv(csv_train_good_dir, True)
     # check_distribution(data)
     # check_cumulative_distribution(data)

@@ -22,7 +22,7 @@ good = "good"
 not_good = "not-good"
 np_txt = "np_text"
 
-csv_path = "csv"
+csv_path = "csv_256"
 csv_dir_good = "good.csv"
 csv_dir_not_good = "not_good.csv"
 csv_dir_test = "test.csv"
@@ -36,8 +36,8 @@ csv_train_good_dir = os.path.join(os.path.abspath(cwd_parent), dataset, archive,
 csv_train_not_good_dir = os.path.join(os.path.abspath(cwd_parent), dataset, archive, csv_path, csv_dir_not_good)
 csv_test_dir = os.path.join(os.path.abspath(cwd_parent), dataset, archive, csv_path, csv_dir_test)
 
-model_path = "entire_model_lr_tanh_2.pt"
-# model_path = "entire_model_RELU.pt"
+# model_path = "entire_model_lr_tanh_2.pt"
+model_path = "entire_model_ReLU_256_3.pt"
 
 def main():
     print("Autoencoder for MVtec screws")
@@ -75,7 +75,7 @@ def main():
 
     # train model
     model.train()
-    batch_size = 20
+    batch_size = 40
     loss_func = nn.MSELoss()
 
     # lower learning rate more?
@@ -83,7 +83,7 @@ def main():
 
     batch_item = Batch(num_items=len(norm_x), batch_size=batch_size, seed=1)
 
-    max_epochs = 1000
+    max_epochs = 3000
 
     print("start training")
 
@@ -120,7 +120,6 @@ def predict_test():
     data_x = test_data
 
     norm_x = data_x / 255
-    H, W = 256, 256
 
     model = T.load(model_path)
     model = model.eval()
@@ -131,13 +130,18 @@ def predict_test():
 
     loss_collect = []
 
-    loss_base = nn.MSELoss(reduction="mean")
+    loss_base = nn.MSELoss()
 
     for i in range(N):
         loss_error = loss_base(X[i], Y[i])
         print("this is loss", loss_error)
         print("this is loss.item", loss_error.item())
         loss_collect.append(loss_error.item())
+
+
+    calculate_threshold = np.mean(loss_collect) + np.std(loss_collect)
+    print("this is calculate_threshold", calculate_threshold)
+    # calculate threshold: 0.02772012562737327
 
     loss_plot = []
 
@@ -175,7 +179,7 @@ def predict_train():
     labels = train_data[:, :1]
 
     norm_x = data_x / 255
-    H, W = 256, 256
+
 
     model = T.load(model_path)
     model = model.eval()
@@ -186,7 +190,7 @@ def predict_train():
 
     loss_collect = []
 
-    loss_base = nn.MSELoss(reduction="mean")
+    loss_base = nn.MSELoss()
 
     print("this is length of N", N)
 
@@ -196,11 +200,10 @@ def predict_train():
         # print("this is loss.item", loss_error.item())
         loss_collect.append(loss_error.item())
 
-    upper_threshold = 0.03
-
+    upper_threshold = 0.023
     # prediction says anomaly, and it is anomaly
     true_positive = 0
-    # prediction says anoamaly, but not anomaly
+    # prediction says anamaly, but not anomaly
     false_positive = 0
     # prediction says not anomaly, and is not anomaly
     true_negative = 0
@@ -230,7 +233,7 @@ def predict_train():
     print('[TN] {}\t[FN] {}'.format(true_negative, false_negative))
 
 
-def sample_reconstruction():
+def sample_reconstruction(size):
     print("this is the sample reconstruction method")
 
     train_good_data = load_csv(csv_train_good_dir, False)
@@ -248,11 +251,8 @@ def sample_reconstruction():
     labels = train_data[:, :1]
 
     norm_x = data_x / 255
-    H, W = 256, 256
 
     print("this is before constructing model data_x", data_x)
-    # model = Anomaly_Net()
-    # model.load_state_dict(T.load(model_path))
 
     model = T.load(model_path)
     model = model.eval()
@@ -263,12 +263,9 @@ def sample_reconstruction():
 
     # plot test image
     arr = data_x[0]
-    arr = arr.reshape((256, 256)).astype('float32')
+    arr = arr.reshape((size, size)).astype('float32')
 
     cv2.imwrite("train_good_first_image.png", arr)
-
-    # plot test reconstruction
-    # reconstruction_arr = Y[data_x[0]]
 
     reconstruction_arr = Y[0]
     print("this is length of reconstruction arr", len(reconstruction_arr))
@@ -289,8 +286,7 @@ def sample_reconstruction():
 
     reconstruction_arr.astype('float32')
 
-
-    reconstruction_arr = reconstruction_arr.reshape((256, 256))
+    reconstruction_arr = reconstruction_arr.reshape((size, size))
 
     # round before casting to int?
     # reconstruction_arr = np.around(reconstruction_arr).astype(int).astype('float32')
@@ -306,8 +302,8 @@ def check_GPU():
 
 if __name__ == "__main__":
     print("this is anomaly_detection_main")
-    # main()
-    # sample_reconstruction()
+    main()
+    # sample_reconstruction(256)
     # check_GPU()
     # predict_test()
-    predict_train()
+    # predict_train()
