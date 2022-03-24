@@ -148,21 +148,21 @@ def predict_test():
     for i in loss_collect:
         loss_plot.append((i, i))
     
-    plt.figure()
-
-    plt.scatter(*zip(*loss_plot))
-    plt.axvline(0.03, 0.0, 0.1)
-
-    plt.legend()
     # plt.figure()
 
-    # lower_threshold = 0.0
-    # upper_threshold = 0.03
-    # plt.figure(figsize=(12,6))
-    # plt.title('Loss Distribution')
-    # sns.distplot(loss_collect, bins=100, kde=True, color='blue')
-    # plt.axvline(upper_threshold, 0.0, 10, color='r')
-    # plt.axvline(lower_threshold, 0.0, 10, color='b')
+    # plt.scatter(*zip(*loss_plot))
+    # plt.axvline(0.016, 0.0, 0.03)
+
+    # plt.legend()
+    # plt.figure()
+
+    lower_threshold = 0.0
+    upper_threshold = 0.016
+    plt.figure(figsize=(12,6))
+    plt.title('Loss Distribution')
+    sns.distplot(loss_collect, bins=100, kde=True, color='blue')
+    plt.axvline(upper_threshold, 0.0, 10, color='r')
+    plt.axvline(lower_threshold, 0.0, 10, color='b')
 
     plt.show()
 
@@ -200,10 +200,10 @@ def predict_train():
         # print("this is loss.item", loss_error.item())
         loss_collect.append(loss_error.item())
 
-    upper_threshold = 0.023
+    upper_threshold = 0.016
     # prediction says anomaly, and it is anomaly
     true_positive = 0
-    # prediction says anamaly, but not anomaly
+    # prediction says anomaly, but not anomaly
     false_positive = 0
     # prediction says not anomaly, and is not anomaly
     true_negative = 0
@@ -301,9 +301,9 @@ def check_GPU():
     print("is gpu available: ", T.cuda.is_available())
 
 if __name__ == "__main__":
-    print("this is anomaly_detection_main")
-    main()
+    print("this is anomaly_detection.py")
+    # main()
     # sample_reconstruction(256)
     # check_GPU()
     # predict_test()
-    # predict_train()
+    predict_train()
